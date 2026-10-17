@@ -5,6 +5,7 @@ shell="$(pwd)/shellforge-plus"
 temp=$(mktemp -d)
 trap 'rm -rf "$temp"' EXIT HUP INT TERM
 cd "$temp"
+export SHELLFORGE_HISTORY="$temp/.shellforge_history"
 check() {
     label=$1 input=$2 expected=$3 code=$4
     actual_code=0
