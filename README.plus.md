@@ -162,7 +162,12 @@ PTY support. All test-created files live in temporary directories.
 parsing failures, execution/file errors, expansion/word-limit errors, background
 jobs/shutdown, and disabled history. It audits invalid accesses and definitely,
 indirectly, or possibly lost allocations. It checks every fork process report,
-not just the parent's return status. A child that fails before exec can report
+not just the parent's return status. Successful exec hands off to an external
+utility, whose allocations are outside this audit (`--trace-children=no`).
+Header-only handoff logs are accepted only for children, only if they contain
+no diagnostics; the parent must have a completed zero-error memory report.
+This avoids attributing external utility allocations (including a small leak
+observed in the runner's `sort`) to Shellforge. A child that fails before exec can report
 inherited memory as still reachable; that is explicitly distinct from lost
 memory. Valgrind and test logs in GitHub Actions are the evidence; merely having
 this workflow file does not imply it passed.
