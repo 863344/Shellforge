@@ -32,14 +32,16 @@ make -f Makefile.plus
 ./shellforge-plus
 ```
 
-For this Windows checkout, the WSL directory is usually:
+For a fresh copy in your Ubuntu home directory:
 
 ```sh
-cd /mnt/c/Users/EREN/Downloads/Shellforge/Shellforge
+sudo apt install git
+git clone https://github.com/863344/Shellforge.git
+cd Shellforge
 ```
 
 Always use `-f Makefile.plus` for this edition. It builds `shellforge-plus`;
-the existing `Makefile` builds the original `shellforge` executable.
+the existing local `Makefile` builds the original `shellforge` executable.
 To remove only the new executable: `make -f Makefile.plus clean`.
 
 ## Try it
@@ -147,13 +149,15 @@ The included tests cover quotes, escapes, pipelines, redirection, directory
 changes, errors, status propagation, recovery, and a large pipeline.
 This checkout was prepared on Windows where WSL and Git Bash reported access
 denied. The available native Windows compiler lacks `sys/wait.h`, which this
-POSIX shell needs. A build dry run and whitespace checks completed, but
-compilation and runtime tests still need to be run on Linux/WSL. The test file
-is supplied for that verification; do not claim a passing run until you run it.
+POSIX shell needs. A build dry run and whitespace checks completed locally.
+Remote validation on GitHub Actions Ubuntu 24.04 then passed strict compilation
+with `-Werror`, test script syntax checking, and all 19 functional checks:
+https://github.com/863344/Shellforge/actions/runs/39045750593
+This verifies the noninteractive tests on Linux; an interactive demonstration
+still needs Ubuntu/WSL on your computer.
 
 The intended public destination is `https://github.com/863344/Shellforge`.
-The old local `origin` belongs to another account and is preserved. Do not push
-these additions there. The new GitHub Actions workflow builds and tests on
+The new GitHub Actions workflow builds and tests on
 Ubuntu whenever changes are published. Check its actual result on the
 repository's Actions tab; a workflow file alone is not evidence of a passing run.
 Review and stage only the additions, preserving the pre-existing executable changes:
