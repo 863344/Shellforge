@@ -11,7 +11,7 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - name: Build with strict warnings
@@ -19,4 +19,8 @@ jobs:
       - name: Check test script syntax
         run: sh -n tests/test_plus.sh
       - name: Run functional tests
-        run: timeout 30 make -f Makefile.plus test
+        run: timeout 90 make -f Makefile.plus test
+      - name: Install Valgrind on the disposable Ubuntu runner
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - name: Audit memory and failure paths
+        run: timeout 180 make -f Makefile.plus valgrind

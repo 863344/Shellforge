@@ -1,14 +1,20 @@
 CC = cc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -O2
+CPPFLAGS = -Iinclude
+SOURCES = src/shellforge_plus.c src/plus_parse.c src/plus_execute.c src/plus_jobs.c src/plus_history.c
 
-.PHONY: all test clean
+.PHONY: all test valgrind clean
 all: shellforge-plus
 
-shellforge-plus: src/shellforge_plus.c
-	$(CC) $(CFLAGS) $< -o $@
+shellforge-plus: $(SOURCES) include/shellforge_plus.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES) -o $@
 
 test: shellforge-plus
 	sh tests/test_plus.sh
+	python3 tests/test_project.py
+
+valgrind: shellforge-plus
+	python3 tests/test_valgrind.py
 
 clean:
 	rm -f shellforge-plus
