@@ -1,0 +1,22 @@
+name: Shellforge Plus Linux tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with strict warnings
+        run: make -f Makefile.plus CFLAGS='-std=c11 -Wall -Wextra -Wpedantic -Werror -O2'
+      - name: Check test script syntax
+        run: sh -n tests/test_plus.sh
+      - name: Run functional tests
+        run: timeout 30 make -f Makefile.plus test

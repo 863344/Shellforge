@@ -1,0 +1,14 @@
+CC = cc
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -O2
+
+.PHONY: all test clean
+all: shellforge-plus
+
+shellforge-plus: src/shellforge_plus.c
+	$(CC) $(CFLAGS) $< -o $@
+
+test: shellforge-plus
+	sh tests/test_plus.sh
+
+clean:
+	rm -f shellforge-plus
