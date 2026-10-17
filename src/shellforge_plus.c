@@ -34,6 +34,7 @@ int main(void) {
             else status = sf_run(&pipeline);
         }
         sf_free_pipeline(&pipeline);
+        fflush(stdout);
     }
     sf_shutdown_jobs();
     sf_history_close();
