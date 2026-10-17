@@ -81,6 +81,18 @@ class Conversation:
             os.close(self.fd)
         else:
             if self.process.poll() is None:
+                children_file = Path(f'/proc/{self.pid}/task/{self.pid}/children')
+                try:
+                    children = children_file.read_text().split()
+                except FileNotFoundError:
+                    children = []
+                for child in children:
+                    try:
+                        group = os.getpgid(int(child))
+                        if group != os.getpgrp():
+                            os.killpg(group, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
                 self.process.kill()
             self.process.communicate(timeout=4)
 
