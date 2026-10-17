@@ -14,7 +14,7 @@ cases = {
     'parse-errors': 'printf "unfinished\nprintf ${BAD\ncat > a > b\n&\n' + 'x ' * 257 + '\nexit 0\n',
     'process-and-file-errors': 'missing_shellforge_command\ncat < absent\nprintf x > absent-dir/file\ncd absent-dir\nexit 0\n',
     'expansion': 'printf "%s" "$HOME"\nprintf "%s" \'$HOME\'\nprintf "%s" "${VG_BIG}"\nexit 0\n',
-    'background': 'sleep 0.01 &\ntrue | cat &\nsleep 0.05\njobs\nsleep 20 &\nexit 0\n',
+    'background': 'sleep 0.01 &\ntrue | cat &\nsleep 0.5\njobs\nsleep 20 &\nsleep 0.5\nexit 0\n',
     'disabled-history': 'history\nprintf ok\nexit 0\n',
 }
 with tempfile.TemporaryDirectory() as directory:
@@ -24,7 +24,7 @@ with tempfile.TemporaryDirectory() as directory:
         case.mkdir()
         history = case / '.shellforge_history' if name != 'disabled-history' else case / 'missing' / 'history'
         env = dict(os.environ, HOME=str(case), SHELLFORGE_HISTORY=str(history), VG_BIG='v' * 65537)
-        command = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
+        command = ['valgrind', '--trace-children=yes', '--leak-check=full', '--show-leak-kinds=all',
             '--errors-for-leak-kinds=definite,indirect,possible', '--error-exitcode=99',
             '--track-fds=yes', '--log-file=' + str(case / 'valgrind-%p.log'), shell]
         result = subprocess.run(command, input=script, text=True, capture_output=True,
